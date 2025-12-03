@@ -203,7 +203,8 @@ body {
     flex: 1;
     height: 100%;
     overflow-y: auto;
-    padding: 32px;
+    padding: 10px;
+    /* Reduced from 32px */
     scroll-behavior: smooth;
     position: relative;
     min-width: 0;
@@ -244,8 +245,10 @@ body {
 /* Cards & Sections */
 .section-card {
     background: var(--sidebar-bg);
-    border-radius: 16px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    /* Reduced radius */
+    margin-bottom: 16px;
+    /* Reduced from 24px */
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     overflow: hidden;
@@ -258,29 +261,31 @@ body {
 }
 
 .card-header {
-    padding: 20px 24px;
+    padding: 12px 10px;
+    /* Reduced from 10px 24px */
     border-bottom: 1px solid var(--border-color);
     background: var(--sidebar-bg);
 }
 
 .card-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
+    /* Reduced from 18px */
     color: var(--text-primary);
 }
 
 /* Quick Commands Grid */
 .quick-grid {
-    padding: 24px;
+    padding: 12px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+    gap: 8px;
 }
 
 .quick-item {
     background: var(--main-bg);
-    padding: 16px;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -295,29 +300,34 @@ body {
 
 .quick-item .cmd {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 18px;
+    font-size: 16px;
+    /* Reduced from 18px */
     font-weight: 700;
     color: var(--accent-color);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    /* Reduced from 8px */
 }
 
 .quick-item .desc {
-    font-size: 13px;
+    font-size: 12px;
+    /* Reduced from 13px */
     color: var(--text-secondary);
 }
 
 /* Section Content */
 .section {
     background: var(--sidebar-bg);
-    border-radius: 16px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    /* Reduced from 24px */
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     overflow: hidden;
 }
 
 .section-header {
-    padding: 20px 24px;
+    padding: 12px 10px;
+    /* Reduced from 10px 24px */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -332,7 +342,8 @@ body {
 }
 
 .section h2 {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    /* Reduced from 1.1rem */
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
@@ -367,11 +378,13 @@ table {
 
 th {
     text-align: left;
-    padding: 16px 24px;
+    padding: 10px 16px;
+    /* Reduced from 16px 24px */
     background: var(--main-bg);
     color: var(--text-secondary);
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
+    /* Reduced from 13px */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid var(--border-color);
@@ -383,10 +396,12 @@ td:first-child {
 }
 
 td {
-    padding: 16px 24px;
+    padding: 10px 16px;
+    /* Reduced from 16px 24px */
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
-    font-size: 15px;
+    font-size: 14px;
+    /* Reduced from 15px */
 }
 
 tr:last-child td {
@@ -421,7 +436,7 @@ tr:hover td {
 
 /* Note */
 .note {
-    margin: 20px 24px;
+    margin: 10px 24px;
     padding: 16px;
     background: var(--note-bg);
     border-left: 4px solid var(--note-border);
@@ -500,7 +515,7 @@ tr:hover td {
     }
 
     .main-content {
-        padding: 20px;
+        padding: 10px;
     }
 
     .mobile-header {
