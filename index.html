@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vim 常用快捷键速查表 (Cheat Sheet)</title>
+    <style>
+        /* CSS 变量 - 支持主题切换 */
+        :root {
+            --bg-color: #f4f4f4;
+            --container-bg: #fff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --header-bg: #007bff;
+            --command-color: #d9534f;
+            --mode-command-color: #5cb85c;
+            --hover-bg: #f9f9f9;
+            --note-bg: #fff3cd;
+            --note-border: #ffc107;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --border-color: #444;
+            --header-bg: #0056b3;
+            --command-color: #ff6b6b;
+            --mode-command-color: #51cf66;
+            --hover-bg: #3a3a3a;
+            --note-bg: #664d03;
+            --note-border: #ffc107;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* 基础样式 */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--container-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: background-color 0.3s;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--header-bg);
+        }
+
+        .theme-toggle, .copy-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover, .copy-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--header-bg);
+        }
+
+        /* 快速导航 */
+        .quick-nav {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            background: var(--container-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--header-bg);
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* 常用命令卡片 */
+        .quick-commands {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: background-color 0.3s;
+        }
+
+        .quick-commands h3 {
+            margin-top: 0;
+            color: var(--text-color);
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-item {
+            padding: 12px;
+            background: var(--hover-bg);
+            border-radius: 6px;
+            border-left: 4px solid var(--header-bg);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .quick-item .cmd {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--command-color);
+            font-size: 16px;
+        }
+
+        .quick-item .desc {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: background-color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 25px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid var(--header-bg);
+        }
+
+        /* 可折叠区域 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            opacity: 0.8;
+        }
+
+        .toggle-icon {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s;
+        }
+
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        th {
+            background-color: var(--header-bg);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        tbody tr {
+            transition: background-color 0.3s;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--hover-bg);
+        }
+
+        tbody tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        tbody tr.hidden {
+            display: none;
+        }
+
+        tbody tr.highlight {
+            background-color: rgba(255, 215, 0, 0.3) !important;
+            animation: highlight 1s ease-out;
+        }
+
+        @keyframes highlight {
+            from { background-color: rgba(255, 215, 0, 0.6); }
+            to { background-color: rgba(255, 215, 0, 0.3); }
+        }
+
+        /* 命令突出样式 */
+        .command {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--command-color);
+            white-space: nowrap;
+            transition: color 0.3s;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .command:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .mode-command {
+            color: var(--mode-command-color);
+        }
+
+        /* 注意事项 */
+        .note {
+            background-color: var(--note-bg);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid var(--note-border);
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toolbar-left {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* 复制提示 */
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--header-bg);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px var(--shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 搜索命令或功能... (Ctrl+F)">
+            <button class="theme-toggle" id="themeToggle">🌙 暗色模式</button>
+        </div>
+    </div>
+
+    <!-- 快速导航 -->
+    <div class="quick-nav">
+        <a href="#quick-commands" class="nav-btn">常用命令</a>
+        <a href="#mode-switch" class="nav-btn">模式切换</a>
+        <a href="#cursor-move" class="nav-btn">光标移动</a>
+        <a href="#cursor-advanced" class="nav-btn">高级移动</a>
+        <a href="#edit" class="nav-btn">编辑操作</a>
+        <a href="#text-objects" class="nav-btn">文本对象</a>
+        <a href="#visual-mode" class="nav-btn">可视模式</a>
+        <a href="#search" class="nav-btn">查找替换</a>
+        <a href="#windows" class="nav-btn">窗口分屏</a>
+        <a href="#marks" class="nav-btn">标记跳转</a>
+        <a href="#registers" class="nav-btn">寄存器</a>
+        <a href="#insert-mode" class="nav-btn">插入模式</a>
+        <a href="#misc" class="nav-btn">其他命令</a>
+        <a href="#save-exit" class="nav-btn">保存退出</a>
+    </div>
+
+    <!-- 常用命令快速访问 -->
+    <div class="quick-commands" id="quick-commands">
+        <h3>🚀 常用命令快速访问</h3>
+        <div class="quick-grid">
+            <div class="quick-item" data-cmd="i">
+                <div class="cmd">i</div>
+                <div class="desc">插入模式</div>
+            </div>
+            <div class="quick-item" data-cmd="Esc">
+                <div class="cmd">Esc</div>
+                <div class="desc">返回普通模式</div>
+            </div>
+            <div class="quick-item" data-cmd=":wq">
+                <div class="cmd">:wq</div>
+                <div class="desc">保存并退出</div>
+            </div>
+            <div class="quick-item" data-cmd="dd">
+                <div class="cmd">dd</div>
+                <div class="desc">删除当前行</div>
+            </div>
+            <div class="quick-item" data-cmd="yy">
+                <div class="cmd">yy</div>
+                <div class="desc">复制当前行</div>
+            </div>
+            <div class="quick-item" data-cmd="p">
+                <div class="cmd">p</div>
+                <div class="desc">粘贴</div>
+            </div>
+            <div class="quick-item" data-cmd="u">
+                <div class="cmd">u</div>
+                <div class="desc">撤销</div>
+            </div>
+            <div class="quick-item" data-cmd="gg">
+                <div class="cmd">gg</div>
+                <div class="desc">跳到文件开头</div>
+            </div>
+            <div class="quick-item" data-cmd="G">
+                <div class="cmd">G</div>
+                <div class="desc">跳到文件末尾</div>
+            </div>
+            <div class="quick-item" data-cmd="/">
+                <div class="cmd">/</div>
+                <div class="desc">搜索</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Vim 常用快捷键速查表</h1>
+        <p>以下命令主要在 <strong>普通模式 (Normal Mode)</strong> 下使用。点击命令可以复制。</p>
+
+        <!-- 模式切换 -->
+        <div class="section" data-section="mode-switch">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="mode-switch">模式切换</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command mode-command" data-copy="Esc">Esc</td>
+                            <td>从任何模式切换回 <strong>普通模式</strong>。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="i">i</td>
+                            <td>切换到 <strong>插入模式</strong>，在光标前插入。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="a">a</td>
+                            <td>切换到 <strong>插入模式</strong>，在光标后插入 (append)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="o">o</td>
+                            <td>切换到 <strong>插入模式</strong>，在当前行下方插入新行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="v">v</td>
+                            <td>切换到 <strong>可视模式</strong> (字符选择)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy=":">:</td>
+                            <td>切换到 <strong>命令行模式</strong>。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="I">I</td>
+                            <td>切换到插入模式，在行首（非空白字符）插入。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="A">A</td>
+                            <td>切换到插入模式，在行尾插入。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="O">O</td>
+                            <td>切换到插入模式，在当前行上方插入新行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="S">S</td>
+                            <td>删除整行并进入插入模式（同 cc）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="R">R</td>
+                            <td>进入替换模式（覆盖模式）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="V">V</td>
+                            <td>切换到可视模式（行选择）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command mode-command" data-copy="Ctrl + v">Ctrl + v</td>
+                            <td>切换到可视模式（块选择/列选择）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 光标移动 -->
+        <div class="section" data-section="cursor-move">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="cursor-move">光标移动</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="h, j, k, l">h, j, k, l</td>
+                            <td>左、下、上、右移动一个字符。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="w">w / b</td>
+                            <td>跳到下一个单词开头 / 跳到上一个单词开头。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="0">0 / $</td>
+                            <td>跳到行首（包括空格） / 跳到行尾。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="^">^</td>
+                            <td>跳到行首第一个非空白字符。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="gg">gg / G</td>
+                            <td>跳到文件第一行 / 跳到文件最后一行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + f">Ctrl + f / Ctrl + b</td>
+                            <td>向下翻一整屏 / 向上翻一整屏。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="e">e / E</td>
+                            <td>跳到单词末尾（小写单词）/ 跳到单词末尾（大写单词）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="ge">ge / gE</td>
+                            <td>跳到上一个单词末尾（小写单词）/ 跳到上一个单词末尾（大写单词）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="H">H / M / L</td>
+                            <td>跳到屏幕顶部 / 跳到屏幕中间 / 跳到屏幕底部。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + d">Ctrl + d / Ctrl + u</td>
+                            <td>向下翻半屏 / 向上翻半屏。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + e">Ctrl + e / Ctrl + y</td>
+                            <td>屏幕向下滚动一行 / 屏幕向上滚动一行。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 高级光标移动 -->
+        <div class="section" data-section="cursor-advanced">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="cursor-advanced">高级光标移动</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="f">f字符 / F字符</td>
+                            <td>在同一行向前跳到指定字符 / 向后跳到指定字符。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="t">t字符 / T字符</td>
+                            <td>在同一行向前跳到指定字符前 / 向后跳到指定字符后。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=";">; / ,</td>
+                            <td>重复上次 f/t/F/T 命令（同方向）/ 反向重复。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="%">%</td>
+                            <td>在配对的括号/大括号之间跳转：() [] {}。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="(">( / )</td>
+                            <td>跳到上一个句子开头 / 跳到下一个句子开头。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="{">{ / }</td>
+                            <td>跳到上一个段落开头 / 跳到下一个段落开头。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="[">[ / ]</td>
+                            <td>跳到上一个区块开头（代码块等）/ 跳到下一个区块开头。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="*">* / #</td>
+                            <td>向前搜索光标下的单词 / 向后搜索光标下的单词。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="g*">g* / g#</td>
+                            <td>向前搜索包含光标下单词的词 / 向后搜索包含光标下单词的词。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + o">Ctrl + o</td>
+                            <td>跳转到跳转列表中的上一个位置。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + i">Ctrl + i / Tab</td>
+                            <td>跳转到跳转列表中的下一个位置。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 编辑操作 -->
+        <div class="section" data-section="edit">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="edit">编辑 (删除、修改、复制、粘贴)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="x">x</td>
+                            <td>删除光标下的字符。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dd">dd</td>
+                            <td><strong>删除</strong>（剪切）当前行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dw">dw</td>
+                            <td>删除从光标到单词末尾。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="D">D</td>
+                            <td>删除从光标到行尾 (同 d$)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="yy">yy</td>
+                            <td><strong>复制</strong> (yank) 当前行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="p">p</td>
+                            <td>在光标<strong>下方</strong>粘贴（如果是行）或光标<strong>后</strong>粘贴（如果是字符）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="P">P</td>
+                            <td>在光标<strong>上方</strong>粘贴（如果是行）或光标<strong>前</strong>粘贴（如果是字符）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="r">r</td>
+                            <td>替换光标下的单个字符。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="cw">cw</td>
+                            <td>更改从光标到单词末尾，并切换到插入模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="cc">cc</td>
+                            <td>更改整行 (删除内容并进入插入模式)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="u">u</td>
+                            <td><strong>撤销</strong>上一个操作 (undo)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + r">Ctrl + r</td>
+                            <td><strong>重做</strong>撤销的操作 (redo)。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=".">.</td>
+                            <td><strong>重复</strong>上一个修改命令。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="J">J</td>
+                            <td>合并当前行和下一行（删除换行符）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="gJ">gJ</td>
+                            <td>合并当前行和下一行（保留空格）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="~">~</td>
+                            <td>切换光标下字符的大小写并右移。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="gu">gu / gU</td>
+                            <td>转换为小写 / 转换为大写（需配合移动命令，如 guw）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="g~">g~</td>
+                            <td>切换大小写（需配合移动命令）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=">>">>> / <<</td>
+                            <td>向右缩进当前行 / 向左缩进当前行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="==">==</td>
+                            <td>自动缩进当前行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + a">Ctrl + a / Ctrl + x</td>
+                            <td>增加光标下的数字 / 减少光标下的数字。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 文本对象 -->
+        <div class="section" data-section="text-objects">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="text-objects">文本对象操作</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="diw">diw / ciw</td>
+                            <td>删除/更改光标下的单词（不包含空格）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="daw">daw / caw</td>
+                            <td>删除/更改光标下的单词（包含前后空格）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dis">dis / cis</td>
+                            <td>删除/更改当前句子。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dip">dip / cip</td>
+                            <td>删除/更改当前段落。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="di">di" / ci"</td>
+                            <td>删除/更改双引号内的内容（光标在引号内）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="da">da" / ca"</td>
+                            <td>删除/更改双引号及内容（光标在引号内）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="di(">di( / ci(</td>
+                            <td>删除/更改括号内的内容（可用 b 代替）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="di[">di[ / ci[</td>
+                            <td>删除/更改方括号内的内容（可用 [ 代替）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="di{">di{ / ci{</td>
+                            <td>删除/更改大括号内的内容（可用 B 代替）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dit">dit / cit</td>
+                            <td>删除/更改 HTML/XML 标签内的内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="dat">dat / cat</td>
+                            <td>删除/更改 HTML/XML 标签及内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="yi">yi" / ya"</td>
+                            <td>复制引号内的内容 / 复制引号及内容（类似 di/da）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="note">
+                    <strong>💡 文本对象语法：</strong> [操作] + [a/i] + [对象]。<br>
+                    <strong>a</strong> = around（包含分隔符），<strong>i</strong> = inside（不包含分隔符）。<br>
+                    常用对象：w(词), s(句), p(段), "(双引号), '(单引号), (, [, {, t(标签), &lt; &gt; 等。
+                </div>
+            </div>
+        </div>
+
+        <!-- 可视模式 -->
+        <div class="section" data-section="visual-mode">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="visual-mode">可视模式高级操作</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="v">v</td>
+                            <td>进入字符选择可视模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="V">V</td>
+                            <td>进入行选择可视模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + v">Ctrl + v</td>
+                            <td>进入块选择可视模式（列选择）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="o">o</td>
+                            <td>在可视模式下，切换选择的起始/结束端。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="gv">gv</td>
+                            <td>重新选择上次的可视区域。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=">">&gt; / &lt;</td>
+                            <td>在可视模式下，向右缩进选中内容 / 向左缩进。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="=">=</td>
+                            <td>在可视模式下，自动缩进选中内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="gu">gu / gU</td>
+                            <td>在可视模式下，转换为小写 / 转换为大写。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="~">~</td>
+                            <td>在可视模式下，切换选中内容的大小写。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="J">J</td>
+                            <td>在可视模式下，合并选中的行。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":">:</td>
+                            <td>在可视模式下，对选中内容执行命令（如 :s/old/new/g）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 查找和替换 -->
+        <div class="section" data-section="search">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="search">查找和替换 (命令行模式)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="/">/搜索内容</td>
+                            <td>向下搜索指定内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="n">n / N</td>
+                            <td>下一个匹配项 / 上一个匹配项。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":s/旧/新/">:s/旧/新/</td>
+                            <td>替换<strong>当前行</strong>第一个匹配的文本。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":%s/旧/新/g">:%s/旧/新/g</td>
+                            <td><strong>替换文件中所有</strong>匹配的文本。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="?">?搜索内容</td>
+                            <td>向上搜索指定内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":s/旧/新/g">:s/旧/新/g</td>
+                            <td>替换当前行所有匹配（g = global）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":s/旧/新/c">:s/旧/新/c</td>
+                            <td>替换时确认（c = confirm）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":5,10s/旧/新/g">:5,10s/旧/新/g</td>
+                            <td>替换第 5-10 行的所有匹配。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":%s/旧/新/gc">:%s/旧/新/gc</td>
+                            <td>全文件替换并逐个确认。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":noh">:noh</td>
+                            <td>取消搜索高亮显示。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 窗口和分屏 -->
+        <div class="section" data-section="windows">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="windows">窗口和分屏</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy=":split">:split / :sp</td>
+                            <td>水平分割窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":vsplit">:vsplit / :vsp</td>
+                            <td>垂直分割窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":new">:new</td>
+                            <td>水平分割并打开新文件。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":vnew">:vnew</td>
+                            <td>垂直分割并打开新文件。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w s">Ctrl + w s</td>
+                            <td>水平分割当前窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w v">Ctrl + w v</td>
+                            <td>垂直分割当前窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w h">Ctrl + w h/j/k/l</td>
+                            <td>切换到左/下/上/右窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w w">Ctrl + w w</td>
+                            <td>循环切换到下一个窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w q">Ctrl + w q / :q</td>
+                            <td>关闭当前窗口。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w o">Ctrl + w o</td>
+                            <td>关闭其他所有窗口（只保留当前）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w =">Ctrl + w =</td>
+                            <td>使所有窗口等高/等宽。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w +">Ctrl + w +/-</td>
+                            <td>增加/减少窗口高度。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w >">Ctrl + w &gt;/&lt;</td>
+                            <td>增加/减少窗口宽度。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w _">Ctrl + w _ / |</td>
+                            <td>最大化窗口高度 / 最大化窗口宽度。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 保存和退出 -->
+        <div class="section" data-section="save-exit">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="save-exit">保存和退出 (命令行模式)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy=":w">:w</td>
+                            <td><strong>保存</strong> (write) 文件。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":q">:q</td>
+                            <td><strong>退出</strong> (quit) Vim。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":wq">:wq 或 ZZ</td>
+                            <td><strong>保存并退出</strong>。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":q!">:q!</td>
+                            <td><strong>强制退出</strong>，<strong>不保存</strong>修改。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="ZZ">ZZ</td>
+                            <td>保存并退出（同 :wq）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="ZQ">ZQ</td>
+                            <td>不保存退出（同 :q!）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":w">:w 文件名</td>
+                            <td>保存为指定文件名。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":x">:x</td>
+                            <td>保存并退出（仅当文件被修改时保存）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 标记和跳转 -->
+        <div class="section" data-section="marks">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="marks">标记和跳转</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="m">m标记</td>
+                            <td>在当前光标位置设置标记（如 ma, mb）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="'">'标记 / `标记</td>
+                            <td>跳转到标记所在行首 / 跳转到标记的精确位置。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="''">'' / ``</td>
+                            <td>跳转到上一次位置的行首 / 精确位置。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":marks">:marks</td>
+                            <td>显示所有标记。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":delmarks">:delmarks a</td>
+                            <td>删除指定标记（如 :delmarks a）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="'[">'[ / ']</td>
+                            <td>跳转到上次编辑/粘贴的开始 / 结束位置。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="'<">'&lt; / '&gt;</td>
+                            <td>跳转到上次可视选择的开始 / 结束位置。</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="note">
+                    <strong>💡 标记类型：</strong><br>
+                    • 小写字母（a-z）：文件内标记，只在当前文件有效<br>
+                    • 大写字母（A-Z）：全局标记，跨文件有效<br>
+                    • 数字（0-9）：由 viminfo 文件记录，0 是上次退出时的位置<br>
+                    • 特殊标记：'（上次跳转位置）、"（上次编辑位置）、[（上次修改开始）、]（上次修改结束）
+                </div>
+            </div>
+        </div>
+
+        <!-- 寄存器 -->
+        <div class="section" data-section="registers">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="registers">寄存器</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy='"'>"寄存器名</td>
+                            <td>指定寄存器（如 "ayy 复制到寄存器 a）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":reg">:reg / :registers</td>
+                            <td>显示所有寄存器内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='"*'>"* / "+</td>
+                            <td>系统剪贴板寄存器（X11 主选择区/剪贴板）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='"_'>"_</td>
+                            <td>黑洞寄存器（删除但不保存到寄存器）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='"/'>"/</td>
+                            <td>最后搜索的字符串寄存器。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='":'>":</td>
+                            <td>最后执行的命令行寄存器。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='"0'>"0</td>
+                            <td>最近一次 yank（复制）的内容。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='".'>".</td>
+                            <td>最近插入的文本。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy='"='>"=</td>
+                            <td>表达式寄存器（可执行表达式并插入结果）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 插入模式快捷键 -->
+        <div class="section" data-section="insert-mode">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="insert-mode">插入模式快捷键</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + h">Ctrl + h</td>
+                            <td>删除前一个字符（同 Backspace）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + w">Ctrl + w</td>
+                            <td>删除前一个单词。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + u">Ctrl + u</td>
+                            <td>删除到行首。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + [">Ctrl + [ / Esc</td>
+                            <td>退出插入模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + o">Ctrl + o</td>
+                            <td>临时执行一个普通模式命令，然后回到插入模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + r">Ctrl + r 寄存器</td>
+                            <td>插入寄存器内容（如 Ctrl + r " 插入系统剪贴板）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + r =">Ctrl + r =</td>
+                            <td>插入表达式计算结果。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + a">Ctrl + a</td>
+                            <td>插入上次插入的文本。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + @">Ctrl + @</td>
+                            <td>插入上次插入的文本并退出插入模式。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + t">Ctrl + t / Ctrl + d</td>
+                            <td>在当前行增加/减少缩进（需设置 indent）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + n">Ctrl + n / Ctrl + p</td>
+                            <td>自动补全：下一个/上一个匹配项。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="Ctrl + x">Ctrl + x</td>
+                            <td>开始补全（后跟 f=文件名, i=包含文件, l=整行, k=字典等）。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 其他实用命令 -->
+        <div class="section" data-section="misc">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2 id="misc">其他实用命令</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>命令</th>
+                            <th>作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="command" data-copy=":e">:e 文件名</td>
+                            <td>打开文件进行编辑。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":r">:r 文件名</td>
+                            <td>将文件内容插入到当前光标下方。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":r !">:r !命令</td>
+                            <td>将命令输出插入到当前光标下方。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":!">:!命令</td>
+                            <td>执行外部命令（如 :!ls）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":%!">:%!命令</td>
+                            <td>用命令处理整个文件（如 :%!sort 排序）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":sh">:sh</td>
+                            <td>启动 shell（输入 exit 返回）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":set">:set 选项</td>
+                            <td>设置选项（如 :set number 显示行号）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":help">:help 命令</td>
+                            <td>查看帮助（如 :help w）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="K">K</td>
+                            <td>查看光标下单词的帮助（man 页面）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":history">:history</td>
+                            <td>显示命令历史（/ 或 :）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="q:">q: / q/</td>
+                            <td>打开命令行窗口（可编辑和重用历史命令）。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":cd">:cd 路径</td>
+                            <td>更改当前工作目录。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy=":pwd">:pwd</td>
+                            <td>显示当前工作目录。</td>
+                        </tr>
+                        <tr>
+                            <td class="command" data-copy="zz">zz / zt / zb</td>
+                            <td>将当前行滚动到屏幕中间/顶部/底部。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>💡 组合命令提示：</strong> Vim 命令可以组合使用： [数字] + [操作] + [移动]。<br>
+            例如：<span class="command" data-copy="3dd">3dd</span> (删除 3 行)，<span class="command" data-copy="y2w">y2w</span> (复制 2 个单词)，<span class="command" data-copy="dG">dG</span> (删除到文件末尾)。
+        </div>
+    </div>
+
+    <!-- 复制提示 -->
+    <div class="copy-toast" id="copyToast">已复制到剪贴板！</div>
+
+    <script>
+        // 主题切换
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // 加载保存的主题
+        const savedTheme = localStorage.getItem('vimCheatSheetTheme') || 'light';
+        if (savedTheme === 'dark') {
+            html.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = '☀️ 亮色模式';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙 暗色模式';
+                localStorage.setItem('vimCheatSheetTheme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ 亮色模式';
+                localStorage.setItem('vimCheatSheetTheme', 'dark');
+            }
+        });
+
+        // 搜索功能
+        const searchBox = document.getElementById('searchBox');
+        let searchTimeout;
+
+        searchBox.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.toLowerCase().trim();
+            
+            searchTimeout = setTimeout(() => {
+                const rows = document.querySelectorAll('tbody tr');
+                let hasResults = false;
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (query === '' || text.includes(query)) {
+                        row.classList.remove('hidden');
+                        if (query && text.includes(query)) {
+                            row.classList.add('highlight');
+                            setTimeout(() => row.classList.remove('highlight'), 1000);
+                        }
+                        hasResults = true;
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                });
+
+                // 显示空状态
+                document.querySelectorAll('.section').forEach(section => {
+                    const tbody = section.querySelector('tbody');
+                    if (tbody) {
+                        const visibleRows = Array.from(tbody.querySelectorAll('tr:not(.hidden)')).length;
+                        if (query && visibleRows === 0) {
+                            if (!tbody.querySelector('.empty-state')) {
+                                const emptyDiv = document.createElement('div');
+                                emptyDiv.className = 'empty-state';
+                                emptyDiv.textContent = '未找到匹配的命令';
+                                tbody.appendChild(emptyDiv);
+                            }
+                        } else {
+                            const emptyDiv = tbody.querySelector('.empty-state');
+                            if (emptyDiv) emptyDiv.remove();
+                        }
+                    }
+                });
+            }, 300);
+        });
+
+        // Ctrl+F 聚焦搜索框
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                searchBox.focus();
+                searchBox.select();
+            }
+            // Esc 清空搜索
+            if (e.key === 'Escape' && document.activeElement === searchBox) {
+                searchBox.value = '';
+                searchBox.dispatchEvent(new Event('input'));
+                searchBox.blur();
+            }
+        });
+
+        // 折叠/展开功能
+        function toggleSection(header) {
+            const section = header.closest('.section');
+            const content = section.querySelector('.section-content');
+            const icon = header.querySelector('.toggle-icon');
+            
+            content.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+
+            // 保存折叠状态
+            const sectionId = section.dataset.section;
+            const isCollapsed = content.classList.contains('collapsed');
+            localStorage.setItem(`vimSection_${sectionId}`, isCollapsed ? 'collapsed' : 'expanded');
+        }
+
+        // 加载保存的折叠状态
+        document.querySelectorAll('.section').forEach(section => {
+            const sectionId = section.dataset.section;
+            const savedState = localStorage.getItem(`vimSection_${sectionId}`);
+            if (savedState === 'collapsed') {
+                const content = section.querySelector('.section-content');
+                const icon = section.querySelector('.toggle-icon');
+                content.classList.add('collapsed');
+                icon.classList.add('collapsed');
+            }
+        });
+
+        // 复制功能
+        const copyToast = document.getElementById('copyToast');
+
+        function showCopyToast() {
+            copyToast.classList.add('show');
+            setTimeout(() => {
+                copyToast.classList.remove('show');
+            }, 2000);
+        }
+
+        function copyToClipboard(text) {
+            // 清理文本（移除 / 前后的内容）
+            const cleanText = text.split('/')[0].split(',')[0].trim();
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(cleanText).then(() => {
+                    showCopyToast();
+                }).catch(() => {
+                    fallbackCopy(cleanText);
+                });
+            } else {
+                fallbackCopy(cleanText);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showCopyToast();
+            } catch (err) {
+                console.error('复制失败', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // 点击命令复制
+        document.querySelectorAll('.command[data-copy]').forEach(cmd => {
+            cmd.addEventListener('click', () => {
+                copyToClipboard(cmd.dataset.copy);
+            });
+        });
+
+        // 快速命令点击
+        document.querySelectorAll('.quick-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const cmd = item.dataset.cmd;
+                copyToClipboard(cmd);
+                
+                // 滚动到对应的命令
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cmdCell = row.querySelector('.command[data-copy="' + cmd + '"]');
+                    if (cmdCell) {
+                        cmdCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        row.classList.add('highlight');
+                        setTimeout(() => row.classList.remove('highlight'), 1000);
+                        
+                        // 展开对应的章节
+                        const section = row.closest('.section');
+                        const content = section.querySelector('.section-content');
+                        if (content.classList.contains('collapsed')) {
+                            toggleSection(section.querySelector('.section-header'));
+                        }
+                    }
+                });
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const href = btn.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
