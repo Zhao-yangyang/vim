@@ -22,6 +22,138 @@ themeToggle.addEventListener('click', () => {
     }
 });
 
+// 渲染数据
+function renderContent() {
+    // 渲染快速命令
+    const quickGrid = document.getElementById('quick-grid');
+    if (quickGrid && vimData.quickCommands) {
+        quickGrid.innerHTML = vimData.quickCommands.map(item => `
+            <div class="quick-item" data-cmd="${item.cmd}">
+                <div class="cmd">${item.cmd}</div>
+                <div class="desc">${item.desc}</div>
+            </div>
+        `).join('');
+    }
+
+    // 渲染主要章节
+    const container = document.getElementById('main-container');
+    if (container && vimData.sections) {
+        // 清除旧的 section
+        container.innerHTML = '';
+
+        vimData.sections.forEach(section => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'section';
+            sectionEl.id = section.id; // Add ID to section for anchor links
+            sectionEl.dataset.section = section.id;
+
+            const rows = section.items.map(item => `
+                <tr>
+                    <td><span class="command" data-copy="${item.cmd}">${item.cmd}</span></td>
+                    <td>${item.desc}</td>
+                </tr>
+            `).join('');
+
+            const noteHtml = section.note ? `<div class="note">${section.note}</div>` : '';
+
+            sectionEl.innerHTML = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">命令</th>
+                                <th>作用</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows}
+                        </tbody>
+                    </table>
+                    ${noteHtml}
+                </div>
+            `;
+            container.appendChild(sectionEl);
+        });
+    }
+}
+
+// 初始化渲染
+renderContent();
+
+// 重新绑定事件监听器
+function attachEventListeners() {
+    // 折叠/展开功能
+    document.querySelectorAll('.section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const section = header.closest('.section');
+            const content = section.querySelector('.section-content');
+            const icon = header.querySelector('.toggle-icon');
+
+            content.classList.toggle('collapsed');
+            icon.classList.toggle('collapsed');
+
+            // 保存折叠状态
+            const sectionId = section.dataset.section;
+            const isCollapsed = content.classList.contains('collapsed');
+            localStorage.setItem(`vimSection_${sectionId}`, isCollapsed ? 'collapsed' : 'expanded');
+        });
+    });
+
+    // 加载保存的折叠状态
+    document.querySelectorAll('.section').forEach(section => {
+        const sectionId = section.dataset.section;
+        const savedState = localStorage.getItem(`vimSection_${sectionId}`);
+        if (savedState === 'collapsed') {
+            const content = section.querySelector('.section-content');
+            const icon = section.querySelector('.toggle-icon');
+            if (content && icon) {
+                content.classList.add('collapsed');
+                icon.classList.add('collapsed');
+            }
+        }
+    });
+
+    // 点击命令复制
+    document.querySelectorAll('.command[data-copy]').forEach(cmd => {
+        cmd.addEventListener('click', () => {
+            copyToClipboard(cmd.dataset.copy);
+        });
+    });
+
+    // 快速命令点击
+    document.querySelectorAll('.quick-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const cmd = item.dataset.cmd;
+            copyToClipboard(cmd);
+
+            // 滚动到对应的命令
+            const rows = document.querySelectorAll('tbody tr');
+            for (let row of rows) {
+                const cmdCell = row.querySelector('.command');
+                if (cmdCell && (cmdCell.dataset.copy === cmd || cmdCell.textContent.includes(cmd))) {
+                    cmdCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.classList.add('highlight');
+                    setTimeout(() => row.classList.remove('highlight'), 1000);
+
+                    const section = row.closest('.section');
+                    const content = section.querySelector('.section-content');
+                    const header = section.querySelector('.section-header');
+                    if (content.classList.contains('collapsed')) {
+                        header.click();
+                    }
+                    break;
+                }
+            }
+        });
+    });
+}
+
+attachEventListeners();
+
 // 搜索功能
 const searchBox = document.getElementById('searchBox');
 let searchTimeout;
@@ -29,7 +161,7 @@ let searchTimeout;
 searchBox.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
     const query = e.target.value.toLowerCase().trim();
-    
+
     searchTimeout = setTimeout(() => {
         const rows = document.querySelectorAll('tbody tr');
         let hasResults = false;
@@ -84,33 +216,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 折叠/展开功能
-function toggleSection(header) {
-    const section = header.closest('.section');
-    const content = section.querySelector('.section-content');
-    const icon = header.querySelector('.toggle-icon');
-    
-    content.classList.toggle('collapsed');
-    icon.classList.toggle('collapsed');
-
-    // 保存折叠状态
-    const sectionId = section.dataset.section;
-    const isCollapsed = content.classList.contains('collapsed');
-    localStorage.setItem(`vimSection_${sectionId}`, isCollapsed ? 'collapsed' : 'expanded');
-}
-
-// 加载保存的折叠状态
-document.querySelectorAll('.section').forEach(section => {
-    const sectionId = section.dataset.section;
-    const savedState = localStorage.getItem(`vimSection_${sectionId}`);
-    if (savedState === 'collapsed') {
-        const content = section.querySelector('.section-content');
-        const icon = section.querySelector('.toggle-icon');
-        content.classList.add('collapsed');
-        icon.classList.add('collapsed');
-    }
-});
-
 // 复制功能
 const copyToast = document.getElementById('copyToast');
 
@@ -122,9 +227,8 @@ function showCopyToast() {
 }
 
 function copyToClipboard(text) {
-    // 清理文本（移除 / 前后的内容）
     const cleanText = text.split('/')[0].split(',')[0].trim();
-    
+
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(cleanText).then(() => {
             showCopyToast();
@@ -152,50 +256,73 @@ function fallbackCopy(text) {
     document.body.removeChild(textarea);
 }
 
-// 点击命令复制
-document.querySelectorAll('.command[data-copy]').forEach(cmd => {
-    cmd.addEventListener('click', () => {
-        copyToClipboard(cmd.dataset.copy);
-    });
-});
+// 平滑滚动 & 导航高亮 (Scroll Spy)
+const navLinks = document.querySelectorAll('.nav-item');
+const mainContent = document.querySelector('.main-content');
 
-// 快速命令点击
-document.querySelectorAll('.quick-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const cmd = item.dataset.cmd;
-        copyToClipboard(cmd);
-        
-        // 滚动到对应的命令
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const cmdCell = row.querySelector('.command[data-copy="' + cmd + '"]');
-            if (cmdCell) {
-                cmdCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                row.classList.add('highlight');
-                setTimeout(() => row.classList.remove('highlight'), 1000);
-                
-                // 展开对应的章节
-                const section = row.closest('.section');
-                const content = section.querySelector('.section-content');
-                if (content.classList.contains('collapsed')) {
-                    toggleSection(section.querySelector('.section-header'));
-                }
-            }
-        });
-    });
-});
+// 点击导航
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        const targetId = href.substring(1);
+        const target = document.getElementById(targetId);
 
-// 平滑滚动
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const href = btn.getAttribute('href');
-        if (href.startsWith('#')) {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (target) {
+            // 移动端关闭菜单
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidebar').classList.remove('open');
+                document.querySelector('.sidebar-overlay')?.classList.remove('show');
             }
+
+            // 滚动到目标
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // 更新高亮
+            navLinks.forEach(n => n.classList.remove('active'));
+            link.classList.add('active');
         }
     });
 });
 
+// 滚动监听
+mainContent.addEventListener('scroll', () => {
+    let current = '';
+    const sections = document.querySelectorAll('.section, .quick-commands-card');
+
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        // 调整偏移量以匹配视觉
+        if (mainContent.scrollTop >= (sectionTop - 100)) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// 移动端菜单
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const sidebar = document.querySelector('.sidebar');
+
+// 创建遮罩层
+const overlay = document.createElement('div');
+overlay.className = 'sidebar-overlay';
+document.body.appendChild(overlay);
+
+function toggleMenu() {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', toggleMenu);
+}
+
+overlay.addEventListener('click', toggleMenu);
